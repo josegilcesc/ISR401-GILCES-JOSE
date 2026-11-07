@@ -39,7 +39,7 @@
 	\maketitle
 	
 	\begin{abstract}
-		En este informe se presenta el avance inicial del trabajo autónomo individual \texttt{TA-IND-01}, enfocado en la aplicación rigurosa del estándar ISO/IEC/IEEE 29148:2018 sobre el Sistema de Gestión Académica (SGA) de la Universidad Técnica Estatal de Quevedo (UTEQ). Se elabora la descripción del entorno operativo institucional, un resumen analítico de las cláusulas normativas 5.2.4, 5.2.5, 5.2.6 y 5.2.7, y un glosario de diez términos técnicos contextualizados a las operaciones académicas universitarias.
+		En este informe se presenta el avance del trabajo autónomo individual \texttt{TA-IND-01}, enfocado en la aplicación del estándar ISO/IEC/IEEE 29148:2018 y del modelo de calidad de producto ISO/IEC 25010:2023 sobre el SGA de la UTEQ. Se presenta el resumen analítico normativo, el glosario de términos técnicos, la especificación formal de quince requisitos utilizando la sintaxis canónica imperativa y su correspondiente matriz de clasificación con métricas y criterios de aceptación cuantitativos.
 	\end{abstract}
 	
 	\section{Descripción del Sistema Elegido: SGA UTEQ}
@@ -120,6 +120,86 @@
 		\item \textbf{Línea Base (\emph{Baseline}) [cláusula 3.1.4]:} Versión revisada y aprobada formalmente de una especificación que sirve como punto de partida para el desarrollo bajo control de cambios.  
 		\emph{Ejemplo SGA:} La versión 1.0 de la SRS del módulo de titulación aprobada por la comisión académica antes de codificar.
 	\end{enumerate}
+	
+	\section{Especificación Formal de Requisitos del SGA UTEQ}
+	Se formulan quince requisitos formales del SGA UTEQ aplicando la sintaxis imperativa de la norma ISO/IEC/IEEE 29148:2018 \cite{ieee29148}. La especificación abarca siete categorías de la cláusula 5.2 e integra cinco requisitos de calidad cuantificados mediante el modelo ISO/IEC 25010:2023 \cite{iso25010}.
+	
+	\subsection{Requisitos Funcionales de Conducta (Cláusula 5.2.2 / ISO 29148)}
+	\req{RF-01} El sistema deberá mostrar el historial consolidado de calificaciones y promedio ponderado acumulado cuando el estudiante autenticado solicite la consulta de su avance curricular, con el fin de permitir la verificación de su estado académico.
+	
+	\req{RF-02} El sistema deberá registrar la asistencia diaria de los estudiantes registrados por clase cuando el docente confirme el formulario de toma de lista, con el fin de computar el porcentaje de asistencia reglamentario.
+	
+	\req{RF-03} El sistema deberá validar el cumplimiento del 100\% de los prerrequisitos y correquisitos de las asignaturas seleccionadas cuando el estudiante envía su solicitud de matriculación en línea, con el fin de impedir la inscripción indebida en asignaturas no habilitadas.
+	
+	\req{RF-04} El sistema deberá generar un certificado digital de matrícula firmado electrónicamente en formato PDF cuando el estudiante complete el proceso de registro, con el fin de servir como comprobante legal de inscripción.
+	
+	\req{RF-05} El sistema deberá emitir una alerta automática por correo institucional al estudiante y a su tutor académico cuando se registre una acumulación de inasistencias superior al 15\%, con el fin de prevenir la pérdida de la materia por faltas.
+	
+	\req{RF-06} El sistema deberá permitir la carga del archivo de sílabo en formato PDF cuando el docente titular seleccione el menú de configuración de asignatura, con el fin de poner a disposición de los estudiantes la planificación académica aprobada.
+	
+	\req{RF-07} El sistema deberá bloquear el acceso al módulo de consulta de calificaciones finales cuando el estudiante mantenga pendiente la encuesta de evaluación docente del período, con el fin de incentivar la participación en el proceso de evaluación institucional.
+	
+	\subsection{Requisitos de Interfaz Externa y Restricciones (Cláusula 5.2.3 y 5.2.8 / ISO 29148)}
+	\req{R-IE-08} El sistema deberá autenticar las credenciales de usuario contra el servidor de Directorio Activo LDAP de la UTEQ cuando se inicie sesión desde cualquier formulario de acceso, con el fin de unificar la gestión de identidades institucionales.
+	
+	\req{R-EO-09} El sistema deberá ejecutarse sobre infraestructura de servidores universitarios administrada bajo el sistema operativo Red Hat Enterprise Linux 9 y PostgreSQL 15, con el fin de cumplir las políticas de infraestructura tecnológica de la UTEQ.
+	
+	\req{R-LR-10} El sistema deberá anonimizar los datos de identificación personal de los estudiantes en los reportes estadísticos exportables cuando el usuario solicite resúmenes de rendimiento académico, con el fin de cumplir con la Ley Orgánica de Protección de Datos Personales (LOPDP) del Ecuador \cite{lopdp2021}.
+	
+	\subsection{Requisitos de Calidad Cuantificados (ISO/IEC 25010:2023)}
+	\req{RNF-01} El sistema deberá responder al 95\% de las solicitudes de consulta de calificaciones en 2,0 segundos o menos ($p95 \le 2{,}0$\,s) cuando operen 2\,500 usuarios virtuales concurrentes durante las semanas de cierre de módulo, con el fin de mantener la continuidad operativa bajo alta demanda \cite{jmeter}.
+	
+	\req{RNF-02} El sistema deberá aplicar cifrado TLS 1.3 en tránsito y AES-256 en reposo para todos los registros de notas y denegar el 100\% de 200 solicitudes de acceso no autorizado, con el fin de preservar la confidencialidad de la información académica.
+	
+	\req{RNF-03} El sistema deberá permitir que al menos el 90\% de 30 estudiantes seleccionados al azar completen el proceso de matriculación ordinaria en 180 segundos o menos sin asistencia previa, con el fin de garantizar la operabilidad de la interfaz en dispositivos móviles y de escritorio \cite{iso9241_11}.
+	
+	\req{RNF-04} El sistema deberá mantener una disponibilidad operativa del 99,5\% durante el ciclo lectivo evaluada mensualmente mediante sondas HTTP sintéticas cada 60 segundos, con el fin de evitar interrupciones en la gestión universitaria \cite{uptimekuma}.
+	
+	\req{RNF-05} El sistema deberá validar el 100\% de las estructuras de datos XML/JSON intercambiadas con el portal central de la Senescyt contra el esquema formal aprobado en homologación, con el fin de asegurar la interoperabilidad de las actas de titulación.
+	
+	\section{Tabla de Clasificación de Requisitos}
+	Se presenta la matriz de clasificación formal de los quince requisitos del SGA UTEQ, detallando la categoría de la norma ISO/IEC/IEEE 29148:2018, la correspondencia con el modelo ISO/IEC 25010:2023, la métrica cuantificada y el criterio de aceptación \cite{ieee29148, iso25010}.
+	
+	\vspace{0.2cm}
+	{\centering
+		\scriptsize
+		\setlength{\tabcolsep}{2.5pt}
+		\noindent\begin{tabularx}{\textwidth}{@{}p{0.8cm} Y p{2.1cm} p{2.5cm} p{2.0cm} p{2.1cm}@{}}
+			\toprule
+			\textbf{ID} & \textbf{Enunciado Formal del Requisito} & \textbf{Categoría ISO 29148 (5.2)} & \textbf{Clasificación ISO 25010:2023} & \textbf{Métrica Cuantitativa} & \textbf{Criterio de Aceptación}\\
+			\midrule
+			\textbf{RF-01} & Mostrar historial de calificaciones y promedio acumulado al estudiante. & Funcional (5.2.2) & N/A (Funcionalidad básica) & Despliegue completo de materias y promedio. & Impresión exacta frente al expediente histórico.\\
+			\addlinespace
+			\textbf{RF-02} & Registrar asistencia diaria por clase tomada por el docente. & Funcional (5.2.2) & N/A (Funcionalidad básica) & Confirmación de registro por sesión. & Almacenamiento directo del \% de asistencia.\\
+			\addlinespace
+			\textbf{RF-03} & Validar 100\% de prerrequisitos al enviar matrícula móvil/web. & Funcional (5.2.2) & N/A (Regla de negocio) & Tasa de rechazo de asignaturas no válidas (100\%). & Bloqueo inmediato de materias no cumplidas.\\
+			\addlinespace
+			\textbf{RF-04} & Generar certificado de matrícula firmado digitalmente en PDF. & Funcional (5.2.2) & N/A (Salida del sistema) & Estructura válida PDF y firma PKI válida. & Documento verificado con firma electrónica.\\
+			\addlinespace
+			\textbf{RF-05} & Emitir alerta por correo al superar 15\% de inasistencias. & Funcional (5.2.2) & N/A (Notificación automática) & Tiempo de notificación posterior a la falta ($< 10$\,min). & Recepción comprobada del correo institucional.\\
+			\addlinespace
+			\textbf{RF-06} & Permitir carga de sílabos en formato PDF por docente. & Funcional (5.2.2) & N/A (Gestión de documentos) & Tamaño máximo de archivo ($\le 10$\,MB). & Disponibilidad inmediata para descarga pública.\\
+			\addlinespace
+			\textbf{RF-07} & Bloquear consulta de notas ante evaluación docente pendiente. & Funcional (5.2.2) & N/A (Regla de control) & Verificación de estado de formulario evaluativo. & Restricción de acceso hasta enviar encuesta.\\
+			\addlinespace
+			\textbf{R-IE-08} & Autenticar credenciales contra el servidor LDAP institucional. & Interfaz Externa (5.2.3) & Compatibilidad / Interoperabilidad & Tasa de respuesta de autenticación ($= 100\%$). & Acceso unificado mediante cuenta @uteq.edu.ec.\\
+			\addlinespace
+			\textbf{R-EO-09} & Ejecutar sobre RHEL 9 y base de datos PostgreSQL 15. & Restricción Operativa (5.2.8) & N/A (Entorno tecnológico) & Compatibilidad de despliegue en servidor. & Ejecución estable en el centro de datos UTEQ.\\
+			\addlinespace
+			\textbf{R-LR-10} & Anonimizar datos personales en reportes según LOPDP. & Restricción Legal (5.2.8) & Seguridad / Confidencialidad & Ausencia de cédula/nombres en reportes (100\%). & Reportes de promedios sin datos identificables.\\
+			\addlinespace
+			\textbf{RNF-01} & Responder consultas de notas en $\le 2{,}0$\,s al $p95$ con 2\,500 usuarios. & Rendimiento / Calidad (5.2.4) & Eficiencia de desempeño / Comportamiento temporal & Percentil 95 del tiempo de respuesta HTTP ($p95$). & Reporte de JMeter con $p95 \le 2{,}0$\,s durante 30 min.\\
+			\addlinespace
+			\textbf{RNF-02} & Cifrar datos en tránsito/reposo y denegar 100\% accesos no autorizados. & Calidad / Seguridad (5.2.4) & Seguridad / Confidencialidad & Tasa de denegación de accesos indebidos (100\%). & 200 pruebas de penetración denegadas con éxito.\\
+			\addlinespace
+			\textbf{RNF-03} & Permitir completar matrícula en $\le 180$\,s al 90\% de estudiantes. & Calidad / Usabilidad (5.2.4) & Usabilidad / Operabilidad de la interfaz & Tiempo de ejecución de tarea y tasa de éxito. & 27 de 30 estudiantes completan en $\le 180$\,s.\\
+			\addlinespace
+			\textbf{RNF-04} & Mantener disponibilidad operativa $\ge 99{,}5\%$ mensual en el ciclo. & Calidad / Fiabilidad (5.2.4) & Fiabilidad / Disponibilidad & Porcentaje de tiempo activo ($Uptime$). & Registros de Uptime Kuma $\ge 99{,}5\%$ en 30 días.\\
+			\addlinespace
+			\textbf{RNF-05} & Validar 100\% de estructuras JSON/XML enviadas a la Senescyt. & Interfaz / Calidad (5.2.3) & Compatibilidad / Interoperabilidad & Tasa de conformidad de esquema JSON (100\%). & Validación exitosa en entorno de homologación.\\
+			\bottomrule
+		\end{tabularx}\par}
+	\vspace{0.2cm}
 	
 	\section{Referencias}
 	\printbibliography[heading=none]
