@@ -1,126 +1,165 @@
 \documentclass[conference]{IEEEtran}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[spanish,es-tabla]{babel}
-\usepackage{lmodern}
-\usepackage{microtype}
-\usepackage{csquotes}
-\usepackage{amsmath,amssymb}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{tabularx}
-\usepackage{url}
-\usepackage[hidelinks]{hyperref}
-
-% Gestion bibliografica mediante biblatex con backend biber (Estilo IEEE)
-\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+% Preámbulo:
+\usepackage[backend=biber,style=ieee,sorting=none,url=true,doi=true]{biblatex}
 \addbibresource{referencias.bib}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\setlist[enumerate]{leftmargin=*,itemsep=1pt,topsep=2pt}
+\setlist[itemize]{leftmargin=*,itemsep=1pt,topsep=2pt}
 \setlength{\parindent}{0.65em}
 \setlength{\parskip}{1pt}
-\renewcommand{\arraystretch}{1.18}
-\DefineBibliographyStrings{spanish}{bibliography={Referencias}}
+\setlength{\columnsep}{0.24in}
+\renewcommand{\arraystretch}{1.16}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\req}[1]{\noindent\textbf{#1:}\enspace}
 \urlstyle{same}
 
 \title{Taller de Identificaci\'on y Clasificaci\'on de Tipos de Requisitos:\\Caso Plataforma de Gesti\'on de Citas M\'edicas}
 
 \author{
-  \IEEEauthorblockN{Jos\'e Ignacio Gilces Carranza}
-  \IEEEauthorblockA{Universidad T\'ecnica Estatal de Quevedo (UTEQ) --- Facultad de Ciencias de la Computaci\'on\\
-  Ingenier\'ia de Software $\cdot$ Ingenier\'ia de Requisitos (ISR-401) $\cdot$ Actividad Formativa FORM-TL-01}
+	\IEEEauthorblockN{Jos\'e Ignacio Gilces Carranza}
+	\IEEEauthorblockA{Universidad T\'ecnica Estatal de Quevedo (UTEQ) --- Facultad de Ciencias de la Computaci\'on\\
+		Ingenier\'ia de Software $\cdot$ Ingenier\'ia de Requerimientos (ISR-401) $\cdot$ Actividad Formativa FORM-TL-01}
 }
 
 \begin{document}
-\onecolumn
-\maketitle
-
-\begin{abstract}
-En este informe se presenta el desarrollo formal de la actividad FORM-TL-01, enfocada en la clasificaci\'on tridimensional (tipo de requisito e ISO/IEC 25010:2023, \'ambito producto/proceso y frontera sistema/software) de los 20 enunciados del caso Policl\'inico Ribera del Quevedo. Se realiza la reescritura y cuantificaci\'on rigurosa de 5 requisitos de calidad vagos mediante sintaxis can\'onica ISO/IEC/IEEE 29148:2018, definiendo m\'etricas, unidades y umbrales verificables alineados con la demanda operativa local y la LOPDP del Ecuador.
-\end{abstract}
-
-\section{Contexto del Sistema y Stakeholders}
-El Policl\'inico Ribera del Quevedo atiende a 12\,000 pacientes registrados con un promedio de 450 citas diarias en 9 especialidades. La saturaci\'on telef\'onica y el ausentismo del 22\,\% exigen una plataforma web y m\'ovil integrada a un quiosco de autoservicio y al sistema de facturaci\'on preexistente.
-
-\begin{center}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}p{3.2cm}p{3.8cm}>{\raggedright\arraybackslash}X@{}}
-\toprule
-\textbf{Stakeholder} & \textbf{Rol en el Policl\'inico} & \textbf{Necesidad preliminar de elicitaci\'on}\\
-\midrule
-Pacientes y familiares & Usuarios finales del portal/m\'ovil & Reservar, reprogramar o cancelar citas sin filas y recibir recordatorios por SMS/correo.\\
-Recepcionistas & Operadores de ventanilla & Registrar la llegada presencial, reducir la transcripci\'on manual y atender sin saturaci\'on.\\
-M\'edicos especialistas & Usuarios del m\'odulo m\'edico & Consultar el flujo diario de pacientes en consultorio y marcar atenciones realizadas.\\
-Director M\'edico & Gestor operativo y patrocinador & Reducir el ausentismo del 22\,\%, optimizar horarios y obtener reportes de inasistencias.\\
-Administrador & Gestor de configuraci\'on & Gestionar cat\'alogo de m\'edicos, especialidades, feriados y supervisar el flujo de cobros.\\
-\'Area de TI (2 personas) & Custodios de infraestructura & Mantener el sistema sobre Java 21 y PostgreSQL con alta disponibilidad.\\
-Proveedor de Facturaci\'on & Entidad externa de integraci\'on & Proveer la interfaz de servicios web para autorizar e intercambiar cobros.\\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-\section{Clasificaci\'on Tridimensional de Requisitos}
-Se clasifican los 20 enunciados del sistema (E01 a E20) conforme a tres dimensiones: (1) Tipo de requisito e ISO/IEC 25010:2023 \cite{iso25010}, (2) \'Ambito (Producto vs. Proceso) y (3) Frontera (Sistema vs. Software) \cite{pohl2025,iso29148}.
-
-\begin{center}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{@{}p{0.6cm}p{3.6cm}p{3.4cm}p{1.4cm}p{1.4cm}>{\raggedright\arraybackslash}X@{}}
-\toprule
-\textbf{ID} & \textbf{Enunciado del Caso} & \textbf{Tipo / ISO 25010} & \textbf{\'Ambito} & \textbf{Frontera} & \textbf{Justificaci\'on T\'ecnica}\\
-\midrule
-E01 & Reserva de cita por especialidad, m\'edico, fecha y hora. & Funcional & Producto & Software & Especifica una funci\'on directa de interacci\'on del paciente con el sistema.\\
-E02 & Env\'io de recordatorio SMS 24 horas antes de la cita. & Funcional & Producto & Software & Comportamiento aut\'onomo del software ante un evento temporal programado.\\
-E03 & La aplicaci\'on debe ser r\'apida. & Calidad (Eficiencia de desempe\~no) & Producto & Software & Atributo de calidad del software: requiere cuantificaci\'on de tiempos de respuesta.\\
-E04 & Registro de llegada del paciente en ventanilla por recepcionista. & Funcional & Producto & Software & Funci\'on operativa asignada al rol recepcionista en la interfaz.\\
-E05 & Desarrollo en Java 21 con base de datos PostgreSQL. & Restricci\'on (T\'ecnica / Stack) & Producto & Software & Limita las decisiones de arquitectura al stack dominado por TI.\\
-E06 & Consulta de pacientes del d\'ia y marcado de atenci\'on por m\'edico. & Funcional & Producto & Software & Funci\'on de gesti\'on de flujo de atenci\'on en el consultorio m\'edico.\\
-E07 & Los datos de salud de los pacientes deben estar seguros. & Calidad (Seguridad / Confidencialidad) & Producto & Software & Exige mecanismos de protecci\'on de datos sensibles en el software.\\
-E08 & Funcionamiento en Android 10 o superior. & Restricci\'on (Entorno operativo) & Producto & Software & Condici\'on de compatibilidad de ejecuci\'on sobre el SO m\'ovil.\\
-E09 & Cancelaci\'on con $<$ 4h se registra como inasistencia. & Restricci\'on (Regla de negocio) & Producto & Sistema & Regla institucional del policl\'inico que gobierna la l\'ogica del servicio.\\
-E10 & F\'acil de usar para pacientes adultos mayores. & Calidad (Usabilidad / Operabilidad) & Producto & Software & Caracter\'istica de interacci\'on y accesibilidad enfocada en el usuario final.\\
-E11 & Entrega del proyecto en un plazo m\'aximo de 6 meses. & Restricci\'on (Proyecto / Gesti\'on) & Proceso & Sistema & L\'imite temporal que condiciona el ciclo de vida del desarrollo.\\
-E12 & Cierre de sesi\'on autom\'atico tras 10 min de inactividad. & Restricci\'on (Regla de seguridad) & Producto & Software & Mecanismo de control de sesi\'on para prevenir accesos no autorizados.\\
-E13 & Lectura de c\'edula en pantalla e impresi\'on de ticket en quiosco. & Funcional & Producto & Sistema & Involucra hardware (pantalla/impresora), firmware y software del quiosco.\\
-E14 & La plataforma debe estar siempre disponible. & Calidad (Fiabilidad / Disponibilidad) & Producto & Software & M\'etrica de continuidad operativa del servicio web/m\'ovil.\\
-E15 & Generaci\'on de reporte mensual de inasistencias por especialidad. & Funcional & Producto & Software & Funci\'on de procesamiento anal\'itico de datos para la direcci\'on m\'edica.\\
-E16 & Validaci\'on de incrementos con Director M\'edico cada 2 semanas. & Restricci\'on (Metodol\'ogica) & Proceso & Sistema & Define el marco de revisi\'on y aceptaci\'on en el proceso de desarrollo.\\
-E17 & Cumplimiento de la Ley Org\'anica de Protecci\'on de Datos (LOPDP). & Restricci\'on (Legal / Regulatoria) & Producto & Sistema & Marco normativo nacional de obligatorio cumplimiento.\\
-E18 & Integraci\'on sin problemas con el sistema de facturaci\'on actual. & Calidad (Compatibilidad / Interoperabilidad) & Producto & Software & Capacidad del software para intercambiar datos con el sistema externo.\\
-E19 & Restablecimiento en $<$ 30 min sin p\'erdida tras fallo de servidor. & Calidad (Fiabilidad / Recuperabilidad) & Producto & Software & Especifica el RTO ($<$30 min) y RPO (0 p\'erdidas) ante contingencias.\\
-E20 & Revisi\'on de c\'odigo por pares antes de integrar en rama principal. & Restricci\'on (Calidad de proceso) & Proceso & Software & Pr\'actica obligatoria de aseguramiento de calidad en el repositorio Git.\\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-\section{Cuantificaci\'on de Requisitos de Calidad Vagos}
-Los enunciados vagos E03, E07, E10, E14 y E18 se reescriben aplicando la estructura can\'onica de la norma ISO/IEC/IEEE 29148:2018 (``El sistema deber\'a [acci\'on] [objeto] cuando [condici\'on], con el fin de [prop\'osito]'') y las caracter\'isticas de calidad de ISO/IEC 25010:2023 \cite{iso29148,iso25010}.
-
-\vspace{0.25cm}
-\begin{center}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{0.7cm}p{5.1cm}p{2.3cm}p{1.4cm}p{0.8cm}p{2.8cm}p{2.8cm}@{}}
-\toprule
-\textbf{ID} & \textbf{Requisito Cuantificado (ISO 29148)} & \textbf{M\'etrica} & \textbf{Umbral} & \textbf{Unidad} & \textbf{Condiciones de Medici\'on} & \textbf{M\'etodo / Herramienta}\\
-\midrule
-\textbf{E03-Q} & El sistema deber\'a responder las consultas de disponibilidad de citas en 2,5 segundos o menos en el percentil 95 cuando operen 300 usuarios concurrentes durante 30 minutos sobre 12\,000 registros, con el fin de evitar retrasos en horas pico. & Percentil 95 del tiempo de respuesta HTTP & $\le$ 2{,}5 & s & 300 usuarios virtuales; 30 min de carga; servidor en homologaci\'on. & Prueba de carga automatizada con Apache JMeter.\\
-\addlinespace[3pt]
-\textbf{E07-Q} & El sistema deber\'a aplicar cifrado AES-256 en reposo y denegar el 100\,\% de 300 solicitudes de acceso no autorizado a datos de salud cuando se ejecuten pruebas de autorizaci\'on, con el fin de proteger la confidencialidad seg\'un la LOPDP \cite{lopdp2021}. & Tasa de denegaci\'on de accesos indebidos & 100\% & \% & 300 peticiones de prueba con cuentas sin permisos requeridos; AES-256. & Inspecci\'on y pruebas de autorizaci\'on con Postman.\\
-\addlinespace[3pt]
-\textbf{E10-Q} & El sistema deber\'a permitir que al menos el 85\,\% de 20 adultos mayores ($>$ 60 a\~nos) completen la reserva de una cita en 180 segundos o menos sin asistencia, utilizando interfaz con fuente $>$ 16 pt y contraste WCAG AAA en Android 10, con el fin de garantizar la accesibilidad. & Tasa de finalizaci\'on de tarea sin asistencia & $\ge$ 85\%; $\le$ 180 & \% / s & 20 usuarios mayores de 60 a\~nos; tarea de agendamiento m\'ovil sin ayuda previa. & Prueba de usabilidad con observaci\'on directa y cron\'ometro.\\
-\addlinespace[3pt]
-\textbf{E14-Q} & El sistema deber\'a mantener una disponibilidad operativa de al menos el 99,2\,\% en la plataforma web y m\'ovil durante el horario de atenci\'on (lunes a s\'abado 07:00--19:00) evaluado mensualmente, con el fin de garantizar el acceso continuo a turnos. & Porcentaje de tiempo de servicio activo (Uptime) & $\ge$ 99{,}2\% & \% mensual & Monitoreo continuo mediante sondas sint\'eticas HTTP cada 60 s durante 30 d\'ias. & An\'alisis h\'ibrido de logs con Uptime Kuma.\\
-\addlinespace[3pt]
-\textbf{E18-Q} & El sistema deber\'a sincronizar correctamente el 100\,\% de 200 solicitudes de verificaci\'on de pago con el sistema de facturaci\'on actual mediante su interfaz web documentada con una latencia inferior a 1,5 s, con el fin de evitar cobros duplicados. & Tasa de sincronizaci\'on de transacciones y latencia & 100\%; latencia $<$ 1{,}5 & \% / s & 200 peticiones de cobro simuladas contra la API del proveedor en homologaci\'on. & Pruebas de integraci\'on de contrato con SoapUI / Postman.\\
-\bottomrule
-\end{tabular}
-\end{center}
-\vspace{0.25cm}
-
-\noindent\textbf{Justificaci\'on de umbrales.} Los 300 usuarios concurrentes responden al pico m\'aximo previsto los lunes a las 07:00. El umbral de 2,5~s asegura fluidez en dispositivos Android de gama media. La tasa del 100\,\% en seguridad y compatibilidad es requerida por tratarse de datos sensibles bajo la LOPDP \cite{lopdp2021} e integraci\'on financiera. El 85\,\% de usabilidad en 180~s considera la curva de aprendizaje de adultos mayores (35\,\% de la poblaci\'on del policl\'inico). La disponibilidad del 99,2\,\% tolera un m\'aximo de 2,3 horas mensuales de indisponibilidad programada.
-
-\section{Referencias}
-\printbibliography[heading=none]
-
-\end{document}
+	\onecolumn
+	\maketitle
+	
+	\begin{abstract}
+		En este informe se presenta el desarrollo formal de la actividad \texttt{FORM-TL-01}, enfocada en la clasificaci\'on tridimensional (tipo de requisito e ISO/IEC 25010:2023, \'ambito producto/proceso y frontera sistema/software) de los 20 enunciados del caso Policl\'inico Ribera del Quevedo. Se realiza la reescritura y cuantificaci\'on rigurosa de 5 requisitos de calidad vagos mediante sintaxis can\'onica ISO/IEC/IEEE 29148:2018, definiendo m\'etricas, unidades y umbrales verificables alineados con la demanda operativa local (300 usuarios concurrentes, 12\,000 pacientes) y la Ley Org\'anica de Protecci\'on de Datos Personales (LOPDP) del Ecuador. Finalmente, se documenta la resoluci\'on fundamentada de discrepancias t\'ecnicas de clasificaci\'on entre analistas.
+	\end{abstract}
+	
+	\section{Contexto del Sistema y Stakeholders}
+	El Policl\'inico Ribera del Quevedo atiende a 12\,000 pacientes registrados con un promedio de 450 citas diarias en 9 especialidades. La saturaci\'on telef\'onica y el ausentismo del 22\,\% exigen una plataforma web y m\'ovil integrada a un quiosco de autoservicio y al sistema de facturaci\'on preexistente.
+	
+	\begin{center}
+		\centering
+		\footnotesize
+		\begin{tabularx}{\textwidth}{@{}p{3.2cm}p{3.2cm}Y@{}}
+			\toprule
+			\textbf{Stakeholder} & \textbf{Rol en el Policl\'inico} & \textbf{Necesidad preliminar de elicitaci\'on}\\
+			\midrule
+			Pacientes y familiares & Usuarios finales del portal/m\'ovil & Reservar, reprogramar o cancelar citas sin filas y recibir recordatorios por SMS/correo.\\
+			Recepcionistas & Operadores de ventanilla & Registrar la llegada presencial, reducir la transcripci\'on manual y atender sin saturaci\'on.\\
+			M\'edicos especialistas & Usuarios del m\'odulo m\'edico & Consultar el flujo diario de pacientes en consultorio y marcar atenciones realizadas.\\
+			Director M\'edico & Gestor operativo y patrocinador & Reducir el ausentismo del 22\,\%, optimizar horarios y obtener reportes de inasistencias.\\
+			Administrador del Policl\'inico & Gestor de configuraci\'on & Gestionar cat\'alogo de m\'edicos, especialidades, feriados y supervisar el flujo de cobros.\\
+			\'Area de TI (2 personas) & Custodios de infraestructura & Mantener el sistema sobre Java 21 y PostgreSQL con alta disponibilidad.\\
+			Proveedor de Facturaci\'on & Entidad externa de integraci\'on & Proveer la interfaz de servicios web para autorizar e intercambiar cobros.\\
+			\bottomrule
+		\end{tabularx}
+	\end{center}
+	
+	\section{Clasificaci\'on Tridimensional de Requisitos}
+	Se clasifican los 20 enunciados del sistema (\textbf{E01} a \textbf{E20}) conforme a tres dimensiones: (1) Tipo de requisito e ISO/IEC 25010:2023 \cite{iso25010}, (2) \'Ambito (Producto vs. Proceso) y (3) Frontera (Sistema vs. Software) \cite{pohl2025, iso29148}.
+	
+	\begin{center}
+		\centering
+		\scriptsize
+		\setlength{\tabcolsep}{3pt}
+		\begin{tabularx}{\textwidth}{@{}c Y p{3.2cm} c c Y@{}}
+			\toprule
+			\textbf{ID} & \textbf{Enunciado del Caso} & \textbf{Dimensi\'on 1: Tipo / ISO 25010} & \textbf{Dim. 2} & \textbf{Dim. 3} & \textbf{Justificaci\'on T\'ecnica}\\
+			\midrule
+			E01 & Reserva de cita por especialidad, m\'edico, fecha y hora. & Funcional & Producto & Software & Especifica una funci\'on directa de interacci\'on del paciente con el sistema.\\
+			E02 & Env\'io de recordatorio SMS 24 horas antes de la cita. & Funcional & Producto & Software & Define un comportamiento aut\'onomo del software ante un evento temporal.\\
+			E03 & La aplicaci\'on debe ser r\'apida. & Calidad (Eficiencia de desempe\~no) & Producto & Software & Atributo de calidad del software; requiere cuantificaci\'on de tiempos de respuesta.\\
+			E04 & Registro de llegada del paciente en ventanilla por recepcionista. & Funcional & Producto & Software & Funci\'on operativa asignada al rol recepcionista en la interfaz.\\
+			E05 & Desarrollo en Java 21 con base de datos PostgreSQL. & Restricci\'on (T\'ecnica / Stack) & Producto & Software & Limita las decisiones de arquitectura al stack tecnol\'ogico dominado por TI.\\
+			E06 & Consulta de pacientes del d\'ia y marcado de atenci\'on por m\'edico. & Funcional & Producto & Software & Funci\'on de gesti\'on de flujo de atenci\'on en el consultorio m\'edico.\\
+			E07 & Los datos de salud de los pacientes deben estar seguros. & Calidad (Seguridad / Confidencialidad) & Producto & Software & Exige mecanismos de protecci\'on de datos sensibles en el software.\\
+			E08 & Funcionamiento en Android 10 o superior. & Restricci\'on (Entorno operativo) & Producto & Software & Condici\'on de compatibilidad de ejecuci\'on sobre el sistema operativo m\'ovil.\\
+			E09 & Cancelaci\'on con $<$ 4h se registra como inasistencia. & Restricci\'on (Regla de negocio) & Producto & Sistema & Regla institucional del GAD/Policl\'inico que gobierna la l\'ogica del servicio.\\
+			E10 & F\'acil de usar para pacientes adultos mayores. & Calidad (Usabilidad / Operabilidad) & Producto & Software & Caracter\'istica de interacci\'on y accesibilidad enfocada en el usuario final.\\
+			E11 & Entrega del proyecto en un plazo m\'aximo de 6 meses. & Restricci\'on (Proyecto / Gesti\'on) & Proceso & Sistema & L\'imite temporal que condiciona el ciclo de vida de desarrollo.\\
+			E12 & Cierre de sesi\'on autom\'atico tras 10 min de inactividad. & Restricci\'on (Regla de seguridad) & Producto & Software & Mecanismo de control de sesi\'on para prevenir accesos no autorizados.\\
+			E13 & Lectura de c\'edula en pantalla e impresi\'on de ticket en quiosco. & Funcional & Producto & Sistema & Involucra hardware (pantalla/impresora), firmware y software del quiosco.\\
+			E14 & La plataforma debe estar siempre disponible. & Calidad (Fiabilidad / Disponibilidad) & Producto & Software & M\'etrica de continuidad operativa del servicio web/m\'ovil.\\
+			E15 & Generaci\'on de reporte mensual de inasistencias por especialidad. & Funcional & Producto & Software & Funci\'on de procesamiento anal\'itico de datos para la direcci\'on m\'edica.\\
+			E16 & Validaci\'on de incrementos con Director M\'edico cada 2 semanas. & Restricci\'on (Metodol\'ogica) & Proceso & Sistema & Define el marco de revisi\'on y aceptaci\'on en el proceso de desarrollo.\\
+			E17 & Cumplimiento de la Ley Org\'anica de Protecci\'on de Datos (LOPDP). & Restricci\'on (Legal / Regulatoria) & Producto & Sistema & Marco normativo nacional de obligatorio cumplimiento tributario y legal.\\
+			E18 & Integraci\'on sin problemas con el sistema de facturaci\'on actual. & Calidad (Compatibilidad / Interoperabilidad) & Producto & Software & Capacidad del software para intercambiar datos con el sistema externo.\\
+			E19 & Restablecimiento en $<$ 30 min sin p\'erdida tras fallo de servidor. & Calidad (Fiabilidad / Recuperabilidad) & Producto & Software & Especifica el RTO ($<$ 30 min) y RPO (0 p\'erdidas) ante contingencias.\\
+			E20 & Revisi\'on de c\'odigo por pares antes de integrar en rama principal. & Restricci\'on (Calidad de proceso) & Proceso & Software & Pr\'actica obligatoria de aseguramiento de calidad en el repositorio Git.\\
+			\bottomrule
+		\end{tabularx}
+	\end{center}
+	
+	\section{Cuantificaci\'on de Requisitos de Calidad Vagos}
+	Los enunciados vagos \textbf{E03}, \textbf{E07}, \textbf{E10}, \textbf{E14} y \textbf{E18} se reescriben aplicando la estructura can\'onica de la norma ISO/IEC/IEEE 29148:2018 (\emph{``El sistema deber\'a [acci\'on] [objeto] cuando [condici\'on], con el fin de [prop\'osito]''}) y las caracter\'isticas de ISO/IEC 25010:2023 \cite{iso29148, iso25010}.
+	
+	\begin{center}
+		\centering
+		\scriptsize
+		\setlength{\tabcolsep}{2.5pt}
+		\begin{tabularx}{\textwidth}{@{}p{0.8cm}Y p{2.2cm} p{1.3cm} p{2.6cm} p{2.1cm}@{}}
+			\toprule
+			\textbf{ID} & \textbf{Requisito Cuantificado (Sintaxis Can\'onica ISO 29148)} & \textbf{M\'etrica} & \textbf{Umbral / Unidad} & \textbf{Condiciones de Medici\'on} & \textbf{M\'etodo / Herramienta}\\
+			\midrule
+			\textbf{E03-Q} & El sistema deber\'a responder las consultas de disponibilidad de citas en \textbf{2,5 segundos o menos en el percentil 95} cuando operen 300 usuarios concurrentes durante 30 minutos sobre 12\,000 registros, con el fin de evitar retrasos en horas pico (lunes 07:00). & Percentil 95 del tiempo de respuesta HTTP ($p95$). & $\leq 2{,}5$ s & 300 usuarios virtuales; 30 min de carga; servidor en homologaci\'on. & Prueba de carga automatizada con Apache JMeter.\\
+			\addlinespace[3pt]
+			\textbf{E07-Q} & El sistema deber\'a aplicar cifrado AES-256 en reposo y \textbf{denegar el 100\,\% de 300 solicitudes de acceso no autorizado} a datos de salud cuando se ejecuten pruebas de autorizacion, con el fin de proteger la confidencialidad seg\'un la LOPDP. & Tasa de denegaci\'on de accesos indebidos. & $= 100\,\%$ denegado; AES-256 & 300 peticiones de prueba con cuentas sin permisos requeridos. & Inspecci\'on y pruebas de autorizacion con Postman.\\
+			\addlinespace[3pt]
+			\textbf{E10-Q} & El sistema deber\'a permitir que \textbf{al menos el 85\,\% de 20 adultos mayores} (mayores de 60 a\~nos) completen la reserva de una cita en \textbf{180 segundos o menos sin asistencia}, utilizando interfaz con fuente $\geq 16$\,pt y contraste WCAG AAA en Android 10, con el fin de garantizar la accesibilidad. & Tasa de finalizaci\'on de tarea sin asistencia. & $\geq 85\,\%$ de exito; $\leq 180$ s & 20 usuarios $\ge 60$ a\~nos; tarea de agendamiento m\'ovil sin ayuda previa. & Prueba de usabilidad con observaci\'on directa y cron\'ometro.\\
+			\addlinespace[3pt]
+			\textbf{E14-Q} & El sistema deber\'a mantener una \textbf{disponibilidad operativa de al menos el 99,2\,\%} en la plataforma web y m\'ovil durante el horario de atenci\'on (lunes a s\'abado 07:00--19:00) evaluado mensualmente, con el fin de garantizar el acceso continuo a turnos. & Porcentaje de tiempo de servicio activo ($Uptime$). & $\geq 99{,}2\,\%$ mensual & Monitoreo continuo mediante sondas sint\'eticas HTTP cada 60 s durante 30 d\'ias. & An\'alisis h\'ibrido de logs con Uptime Kuma.\\
+			\addlinespace[3pt]
+			\textbf{E18-Q} & El sistema deber\'a sincronizar correctamente el \textbf{100\,\% de 200 solicitudes de verificaci\'on de pago} con el sistema de facturaci\'on actual mediante su interfaz web documentada con una latencia inferior a 1,5 s, con el fin de evitar cobros duplicados. & Tasa de sincronizaci\'on de transacciones y latencia. & $= 100\,\%$ exito; latencia $\leq 1{,}5$ s & 200 peticiones de cobro simuladas contra la API del proveedor en homologaci\'on. & Pruebas de integraci\'on de contrato con SoapUI / Postman.\\
+			\bottomrule
+		\end{tabularx}
+	\end{center}
+	
+	\noindent\textbf{Justificaci\'on de umbrales.} Los 300 usuarios concurrentes responden al pico m\'aximo previsto los lunes a las 07:00. El umbral de 2,5 s asegura fluidez en dispositivos Android de gama media. La tasa del 100\,\% en seguridad y compatibilidad es requerida por tratarse de datos sensibles bajo la LOPDP \cite{lopdp2021} e integraci\'on financiera. El 85\,\% de usabilidad en 180 s considera la curva de aprendizaje de adultos mayores (35\,\% de la poblaci\'on del policl\'inico). La disponibilidad del 99,2\,\% tolera un m\'aximo de 2,3 horas mensuales de indisponibilidad programada.
+	
+	\section{An\'alisis y Resoluci\'on de Discrepancias}
+	Durante la evaluaci\'on del taller se identificaron cuatro discrepancias conceptuales entre los integrantes del equipo, las cuales se resolvieron mediante la aplicaci\'on de las normas ISO 29148 y Pohl \cite{pohl2025, iso29148}:
+	
+	\begin{enumerate}
+		\item \textbf{E05 (Java 21 / PostgreSQL):} \emph{¿Funcional o Restricci\'on?}  
+		\textbf{Debate:} Se argumentaba que al posibilitar el almacenamiento era funcional.  
+		\textbf{Resoluci\'on:} Es una \textbf{Restricci\'on T\'ecnica} de producto. No describe una conducta observable por el usuario, sino un l\'imite de dise\'o e infraestructura impuesto por el equipo de TI.
+		
+		\item \textbf{E09 (Regla de cancelaci\'on $<$ 4h):} \emph{¿Requisito Funcional o Restricci\'on de Negocio?}  
+		\textbf{Debate:} Inicialmente se catalog\'o como una funci\'on del software para marcar inasistencias.  
+		\textbf{Resoluci\'on:} Es una \textbf{Restricci\'on (Regla de Negocio)}. La restricci\'on es la regla administrativa preexistente del Policl\'inico; el software \'unicamente la implementa dentro de la l\'ogica del dominio.
+		
+		\item \textbf{E12 (Cierre de sesi\'on autom\'atico a los 10 min):} \emph{¿Requisito Funcional o Restricci\'on de Seguridad?}  
+		\textbf{Debate:} Exist\'ia duda sobre si era un requisito de calidad de seguridad o una restricci\'on.  
+		\textbf{Resoluci\'on:} Se clasifica como una \textbf{Restricci\'on de Seguridad}. Establece una frontera estricta de tiempo de inactividad que limita el comportamiento de las sesiones por motivos de protecci\'on de datos.
+		
+		\item \textbf{E16 (Validaci\'on bimensual con el Director):} \emph{¿Ámbitos Producto o Proceso?}  
+		\textbf{Debate:} Se confund\'ia con una propiedad de calidad del software.  
+		\textbf{Resoluci\'on:} Pertenece al \'ambito de \textbf{Proceso} (Restricci\'on Metodol\'ogica). Rige la forma en que el equipo entrega e inspecciona los avances, sin a\~nadir caracter\'isticas al software entregable.
+	\end{enumerate}
+	
+	\section{Conclusiones}
+	\begin{enumerate}
+		\item La clasificaci\'on tridimensional de requisitos de software permite separar claramente las funciones del producto, las restricciones operativas/regulatorias y las actividades del proceso de desarrollo, evitando ambig\"uedades en la asignaci\'on de responsabilidades t\'ecnicas.
+		\item La cuantificaci\'on de requisitos no funcionales mediante el modelo ISO/IEC 25010:2023 transforma enunciados ambiguos (como ``r\'apido'' o ``seguro'') en m\'etricas cuantitativas objetivas (percentil 95, tasas de denegaci\'on, tiempo de tarea), garantizando su verificabilidad mediante pruebas automatizadas (JMeter, Postman, Uptime Kuma).
+		\item El an\'alisis riguroso del contexto del Policl\'inico Ribera del Quevedo demuestra que las reglas de negocio preexistentes y el marco legal (LOPDP) act\'uan como restricciones fundamentales que condicionan el dise\'o y la arquitectura del sistema de agendamiento.
+	\end{enumerate}
+	
+	% Se reemplaza el entorno manual \begin{thebibliography} por los comandos nativos de biblatex
+		\nocite{*} % Asegura que todas las fuentes de referencias.bib se incluyan aunque no se citen directamente (como acmEthics2018)
+		\printbibliography[title={Referencias}]
+		
+		\section*{Declaraci\'on de uso de Inteligencia Artificial}
+		En cumplimiento de las normas de integridad acad\'emica y pol\'iticas de evaluaci\'on de la asignatura:
+		\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+			\item \textbf{Herramientas empleadas:} Gemini (Google) y ChatGPT (OpenAI).
+			\item \textbf{Prop\'osito del uso:} Asistencia auxiliar en la estructuraci\'on de plantillas y c\'odigo \LaTeX{} (alineaci\'on de tablas en \texttt{tabularx}), correcci\'on de estilo tipogr\'afico y revisi\'on ortogr\'afica de la documentaci\'on t\'ecnica.
+			\item \textbf{M\'etodo de verificaci\'on humana:} El estudiante revis\'o, analiz\'o y valid\'o de manera aut\'onoma la clasificaci\'on tridimensional de los 20 enunciados, las m\'etricas y umbrales cuantitativos de los 5 requisitos de calidad, la argumentaci\'on de las discrepancias del taller y la correspondencia de las referencias bibliogr\'aficas oficiales citadas (\cite{iso29148}, \cite{iso25010}, \cite{pohl2025}).
+		\end{itemize}
+		
+	\end{document}
