@@ -39,7 +39,7 @@
 	\maketitle
 	
 	\begin{abstract}
-		En este informe se presenta el avance del trabajo autónomo individual \texttt{TA-IND-01}, enfocado en la aplicación del estándar ISO/IEC/IEEE 29148:2018 y del modelo de calidad de producto ISO/IEC 25010:2023 sobre el SGA de la UTEQ. Se presenta el resumen analítico normativo, el glosario de términos técnicos, la especificación formal de quince requisitos utilizando la sintaxis canónica imperativa y su correspondiente matriz de clasificación con métricas y criterios de aceptación cuantitativos.
+		En este informe se presenta el desarrollo integral del trabajo autónomo individual \texttt{TA-IND-01}, enfocado en la aplicación rigurosa del estándar ISO/IEC/IEEE 29148:2018 y del modelo de calidad de producto ISO/IEC 25010:2023 sobre un sistema de software real en producción: el Sistema de Gestión Académica (SGA) de la Universidad Técnica Estatal de Quevedo (UTEQ). Se elabora un resumen analítico de las cláusulas clave de la norma (5.2.4, 5.2.5, 5.2.6 y 5.2.7), un glosario de diez términos técnicos contextualizados y una especificación formal de quince requisitos del sistema utilizando la sintaxis canónica imperativa. Además, se clasifican los requisitos de calidad mediante métricas y criterios de aceptación cuantitativos, se presenta una tabla de autoevaluación frente a términos ambiguos prohibidos y se concluye con una reflexión crítica sobre la complejidad del modelado de requisitos no funcionales.
 	\end{abstract}
 	
 	\section{Descripción del Sistema Elegido: SGA UTEQ}
@@ -201,7 +201,53 @@
 		\end{tabularx}\par}
 	\vspace{0.2cm}
 	
+	\section{Autoevaluación de Requisitos y Corrección de Términos Prohibidos}
+	Se presenta el proceso de autoevaluación donde se identifican enunciados defectuosos originales que violaban los criterios de la cláusula 5.2.5 (singularidad, ambigüedad) y utilizaban términos prohibidos por la cláusula 5.2.7 (``rápido'', ``fácil'', ``seguro'', ``amigable'') \cite{ieee29148}. Se documenta la versión corregida adaptada a la norma:
+	
+	\vspace{0.2cm}
+	{\centering
+		\scriptsize
+		\setlength{\tabcolsep}{2.5pt}
+		\noindent\begin{tabularx}{\textwidth}{@{}p{0.8cm} Y Y p{3.0cm}@{}}
+			\toprule
+			\textbf{ID} & \textbf{Versión Anterior (Ambigua / Imperfecta)} & \textbf{Versión Corregida (Normada ISO 29148 / ISO 25010)} & \textbf{Falla Identificada y Corrección Aplicada}\\
+			\midrule
+			\textbf{RNF-01} & El sistema debe cargar las notas de forma rápida e intuitiva para los alumnos. & El sistema deberá responder las consultas de calificaciones en 2,0 segundos o menos al percentil 95 ($p95 \le 2{,}0$\,s) con 2\,500 usuarios concurrentes, con el fin de evitar retrasos en cierre de módulo. & \textbf{Falla:} Uso de términos prohibidos ``rápida'' e ``intuitiva'' (5.2.7) y falta de métrica. \textbf{Corrección:} Cuantificación con percentil $p95$ y carga dimensionada.\\
+			\addlinespace
+			\textbf{RNF-02} & La base de datos del SGA debe ser muy segura y robusta ante ataques. & El sistema deberá aplicar cifrado TLS 1.3 en tránsito y AES-256 en reposo, denegando el 100\% de 200 solicitudes no autorizadas, con el fin de garantizar la confidencialidad. & \textbf{Falla:} Uso de calificativos no medibles ``muy segura'' y ``robusta'' (5.2.7). \textbf{Corrección:} Definición de estándares criptográficos y tasa de denegación.\\
+			\addlinespace
+			\textbf{RNF-03} & El módulo de matrícula debe ser fácil de usar y amigable para el usuario. & El sistema deberá permitir que al menos el 90\% de 30 estudiantes completen su matrícula en 180 segundos o menos sin asistencia, con el fin de asegurar la operabilidad. & \textbf{Falla:} Subjetividad en ``fácil'' y ``amigable'' (5.2.7). \textbf{Corrección:} Métrica de usabilidad basada en tiempo de tarea y tasa de éxito (ISO 25010).\\
+			\addlinespace
+			\textbf{RF-01} & El sistema mostrará las notas del alumno y además permitirá descargar el sílabo y enviar un correo al profesor si hay errores. & El sistema deberá mostrar el historial de calificaciones cuando el estudiante autenticado lo solicite, con el fin de verificar su estado académico. & \textbf{Falla:} Falta de singularidad (5.2.5), agrupa tres funciones distintas con el conector copulativo ``además''. \textbf{Corrección:} Separación en requisitos singulares.\\
+			\addlinespace
+			\textbf{RNF-04} & La plataforma debe estar siempre disponible durante todo el semestre académico, etc. & El sistema deberá mantener una disponibilidad operativa de al menos el 99,5\% evaluada mensualmente, con el fin de garantizar el acceso continuo. & \textbf{Falla:} Uso de absolutismo inaccesible ``siempre disponible'' y término abierto prohibido ``etc.'' (5.2.7). \textbf{Corrección:} Porcentaje de disponibilidad realista.\\
+			\bottomrule
+		\end{tabularx}\par}
+	\vspace{0.2cm}
+	
+	\section{Reflexión Crítica}
+	Durante el desarrollo de esta actividad, la mayor complejidad técnica se presentó al formular los \textbf{requisitos de calidad cuantificados (no funcionales)} bajo el modelo ISO/IEC 25010:2023 y la cláusula 5.2.7 de la norma ISO/IEC/IEEE 29148:2018. En la práctica tradicional del desarrollo de software, existe una tendencia arraigada a describir la calidad mediante adjetivos cualitativos deseables pero inverificables, tales como ''sistema rápido'', ''interfaz amigable'' o ''plataforma segura''.
+	
+	Eliminar estos términos prohibidos exigió un cambio de paradigma hacia la ingeniería analítica, obligando a traducir expectativas cualitativas en variables medibles de laboratorio. Por ejemplo, definir la usabilidad no como una apreciación de diseño, sino como una prueba de rendimiento humano con estudiantes reales resolviendo la matrícula en menos de 180 segundos (ISO 9241-11), o establecer la eficiencia no como una percepción de velocidad, sino como un umbral en el percentil 95 ($p95 \le 2{,}0$\,s) bajo una carga acotada de 2\,500 usuarios concurrentes en JMeter[cite: 9].
+	
+	Esta rigurosidad en la cuantificación demuestra que un requisito de calidad mal formulado es equivalente a un requisito ausente, ya que impide a los equipos de pruebas (QA) establecer aserciones objetivas de aceptación. La aplicación del estándar ISO 29148 transforma la especificación en una herramienta de contrato técnico, protegiendo al proyecto de ambigüedades y desviaciones en la entrega final.
+	
+	\section{Conclusiones}
+	\begin{enumerate}
+		\item La adopción del estándar ISO/IEC/IEEE 29148:2018 proporciona una sintaxis canónica imperativa que elimina la ambigüedad en la transferencia de requisitos entre las partes interesadas y el equipo de desarrollo.
+		\item La prohibición explícita de términos vagos según la cláusula 5.2.7 obliga a cuantificar los atributos de calidad mediante métricas reproducibles (percentiles de respuesta, porcentajes de éxito en usabilidad y tasas de denegación de accesos).
+		\item El modelo ISO/IEC 25010:2023 complementa la ingeniería de requisitos estructurando de forma rigurosa las características de calidad del producto software, garantizando que los requisitos no funcionales posean criterios de aceptación comprobables.
+	\end{enumerate}
+	
 	\section{Referencias}
 	\printbibliography[heading=none]
+	
+	\section*{Declaración de uso de Inteligencia Artificial}
+	En cumplimiento de las normas de integridad académica y políticas de evaluación de la asignatura:
+	\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+		\item \textbf{Herramientas empleadas:} Gemini (Google) y ChatGPT (OpenAI).
+		\item \textbf{Propósito del uso:} Asistencia auxiliar en la maquetación y formateo de tablas en código \LaTeX{} (\texttt{tabularx}), corrección de estilo tipográfico y revisión ortográfica del documento.
+		\item \textbf{Método de verificación humana:} El estudiante analizó, redactó y validó de forma autónoma todos los párrafos del resumen analítico, el glosario de diez términos, los quince requisitos formales del SGA UTEQ, la autoevaluación frente a términos prohibidos, la reflexión crítica y la correspondencia de las referencias bibliográficas oficiales citadas (\cite{ieee29148}, \cite{iso25010}, \cite{pohl2025}, \cite{swebok2024}, \cite{lopdp2021}).
+	\end{itemize}
 	
 \end{document}
