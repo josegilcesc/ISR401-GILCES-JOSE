@@ -40,7 +40,6 @@ FORM-TL-01/
 ├── main.tex                           # Codigo fuente principal en LaTeX
 ├── main.pdf                           # Documento compilado y listo para verificacion
 ├── referencias.bib                    # Fuentes bibliograficas normalizadas en IEEE
-└── anexos/                            # Notas de discusion y actas de discrepancias
 ```
 
 ### Elementos Desarrollados en `main.pdf`:
