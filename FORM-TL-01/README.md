@@ -17,7 +17,7 @@ Directorio de trabajo y entrega de la actividad formativa **FORM-TL-01**, corres
 * **Docente:** Prof. Gleiston Ciceron Guerrero Ulloa, PhD (gguerrero@uteq.edu.ec)
 * **Estudiante:** Jose Ignacio Gilces Carranza
 * **Periodo Academico:** Segundo Periodo Academico Ordinario (SPA) 2026-2027
-* **Fecha Limite de Cierre:** Sabado 31 de octubre de 2026, 23:59
+* **Fecha Limite de Cierre:** Sabado 7 de noviembre de 2026, 23:59
 * **Repositorio:** https://github.com/josegilcesc/ISR401-GILCES-JOSE
 * **Directorio de la Actividad:** `FORM-TL-01/`
 
