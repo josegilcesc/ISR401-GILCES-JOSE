@@ -60,6 +60,9 @@ ISR401-GILCES-JOSE/
     └── evidencias/                    # Fotografías originales de las hojas escritas a mano
         ├── hoja-01.jpg
         └── hoja-02.jpg
+        └── hoja-03.jpg
+        └── hoja-04.jpg
+
 ```
 
 > **Nota:** Cada subdirectorio de actividad contiene sus respectivos archivos fuente `.tex`, archivo de bibliografía `.bib`, carpeta `figures/` o `evidencias/` (cuando aplique) y el documento final compilado `.pdf`.
