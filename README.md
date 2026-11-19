@@ -6,15 +6,15 @@ Repositorio académico individual para el desarrollo, control de versiones y ent
 
 ## 📌 Datos Informativos
 
-* **Institución:** Universidad Técnica Estatal de Quevedo (UTEQ)
-* **Facultad:** Facultad de Ciencias de la Computación
-* **Carrera:** Ingeniería de Software (Rediseño)
-* **Asignatura:** Ingeniería de Requerimientos (ISR-401)
-* **Nivel / Paralelo:** 4.º Nivel — Paralelo «A»
-* **Periodo Académico:** Segundo Periodo Académico Ordinario (SPA) 2026–2027
-* **Docente:** Prof. Gleiston Cicerón Guerrero Ulloa, PhD (gguerrero@uteq.edu.ec)
-* **Estudiante:** José Gilces
-* **URL del Repositorio:** https://github.com/josegilcesc/ISR401-GILCES-JOSE
+- **Institución:** Universidad Técnica Estatal de Quevedo (UTEQ)
+- **Facultad:** Facultad de Ciencias de la Computación
+- **Carrera:** Ingeniería de Software (Rediseño)
+- **Asignatura:** Ingeniería de Requerimientos (ISR-401)
+- **Nivel / Paralelo:** 4.º Nivel — Paralelo «B»
+- **Periodo Académico:** Segundo Periodo Académico Ordinario (SPA) 2026–2027
+- **Docente:** Prof. Gleiston Cicerón Guerrero Ulloa, PhD (gguerrero@uteq.edu.ec)
+- **Estudiante:** José Ignacio Gilces Carranza
+- **URL del Repositorio:** https://github.com/josegilcesc/ISR401-GILCES-JOSE
 
 ---
 
@@ -46,12 +46,20 @@ ISR401-GILCES-JOSE/
 │   ├── TA-PFC-E3/                     # Entrega 3: ERS (IEEE 29148), UML e inspección
 │   └── TA-PFC-E4/                     # Entrega final: ERS validado, backlog y métricas
 │
-└── 04_Evaluaciones/                   # Componente EV (Casos prácticos de exámenes)
-    ├── EV-SUM-01_U1/
-    ├── EV-SUM-02_U2/
-    ├── EV-SUM-03_U3/
-    ├── EV-SUM-04_U4/
-    └── EV-SUM-05_U5/
+├── 04_Evaluaciones/                   # Componente EV (Exámenes y pruebas prácticas)
+│   ├── EV-SUM-02_U2/
+│   ├── EV-SUM-03_U3/
+│   ├── EV-SUM-04_U4/
+│   └── EV-SUM-05_U5/
+│
+└── EV-PRAC-01/                        # Evaluación de la Unidad I (Caso ALERTARÍO)
+    ├── main.tex                       # Transcripción fiel de la prueba escrita a mano
+    ├── main.pdf                       # PDF compilado desde main.tex
+    ├── referencias.bib                # Bibliografía utilizada en la plantilla
+    ├── logoband.png                   # Recurso gráfico institucional de la portada
+    └── evidencias/                    # Fotografías originales de las hojas escritas a mano
+        ├── hoja-01.jpg
+        └── hoja-02.jpg
 ```
 
 > **Nota:** Cada subdirectorio de actividad contiene sus respectivos archivos fuente `.tex`, archivo de bibliografía `.bib`, carpeta `figures/` o `evidencias/` (cuando aplique) y el documento final compilado `.pdf`.
@@ -60,16 +68,13 @@ ISR401-GILCES-JOSE/
 
 ## ⚙️ Reproducibilidad y Compilación en LaTeX
 
-Conforme a la norma de entrega y al **Criterio de Piso P2**, todo informe debe poder regenerarse fielmente clonando el repositorio y ejecutando la compilación.
+Conforme a la norma de entrega y al **Criterio de Piso P2**, todo informe y evaluación debe poder regenerarse fielmente clonando el repositorio y ejecutando la compilación.
 
-### Entorno y Dependencias Requeridas
-* **Distribución recomendada:** TeX Live 2024+, MiKTeX o MacTeX.
-* **Compilador del documento:** `pdflatex` (o `xelatex` según se especifique en la plantilla).
-* **Gestor bibliográfico:** `biber` (con backend `biblatex`).
-* **Paquetes clave:** `biblatex` (estilo `ieee`), `geometry`, `graphicx`, `booktabs`, `hyperref`, `amsmath`, `microtype`, `csquotes`.
-
-### Secuencia de Compilación Estándar
-Para garantizar la resolución correcta de hipervínculos, índices y citas bibliográficas en estilo IEEE, se debe ejecutar la siguiente cadena de comandos desde la carpeta de la actividad:
+### 1. Compilación de Informes Generales (`biblatex` + `biber`)
+- **Distribución recomendada:** TeX Live 2024+, MiKTeX o MacTeX.
+- **Compilador:** `pdflatex`
+- **Gestor bibliográfico:** `biber`
+- **Paquetes clave:** `biblatex` (estilo `ieee`), `geometry`, `graphicx`, `booktabs`, `hyperref`, `amsmath`, `microtype`, `csquotes`.
 
 ```bash
 pdflatex main.tex
@@ -78,13 +83,29 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
+### 2. Compilación de la Evaluación de Unidad I (`EV-PRAC-01`)
+Para reproducir el documento `EV-PRAC-01/main.pdf`:
+- **Compilador:** `pdflatex` (distribución TeX Live / MiKTeX) y `bibtex`.
+- **Archivo principal:** `EV-PRAC-01/main.tex`.
+- **Dependencias (paquetes LaTeX):** `inputenc`, `fontenc`, `helvet`, `geometry`, `graphicx`, `array`, `tabularx`, `longtable`, `pdflscape`, `colortbl`, `xcolor`, `enumitem`, `fancyhdr`, `lastpage`, `tcolorbox`, `amsmath`, `natbib`, `url`, `needspace`, `caption`, `hyperref`.
+- **Archivos auxiliares requeridos en la misma carpeta:** `referencias.bib` y `logoband.png` (en caso de usar el encabezado institucional).
+- **Orden de comandos:**
+
+```bash
+cd EV-PRAC-01
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+```
+
 ---
 
 ## 📚 Estándar de Referencias Bibliográficas
 
-* Todas las citas y fuentes consultadas siguen estrictamente la norma **IEEE** gestionadas con **`biblatex`**.
-* Conforme al **Criterio de Piso P4** y la dimensión **D6**, todas las referencias listadas corresponden a obras reales, verificables y vigentes, con sus respectivos autores, año, título, editorial/revista y código DOI/ISBN verificado.
-* **Bibliografía base de la materia:**
+- Todas las citas y fuentes consultadas siguen estrictamente la norma **IEEE**.
+- Conforme al **Criterio de Piso P4** y la dimensión **D6**, todas las referencias listadas corresponden a obras reales, verificables y vigentes, con sus respectivos autores, año, título, editorial/revista y código DOI/ISBN verificado.
+- **Bibliografía base de la materia:**
   * ISO/IEC/IEEE 29148:2018 — *Requirements Engineering*.
   * Klaus Pohl (2025) — *Requirements Engineering: Fundamentals, Principles, and Techniques* (2.ª ed.).
   * IEEE Computer Society (2024) — *Guide to the SWEBOK v4.0*.
@@ -104,6 +125,6 @@ Este repositorio opera bajo el **Código de Ética de la ACM** y las políticas 
 
 ## ⏱️ Política de Commits y Trabajo Anticipado
 
-En cumplimiento de la Sección 6 y la rúbrica de desempeño:
-* Las entregas cierran los **sábados a las 23:59** de la semana correspondiente a la actividad.
-* El historial de control de versiones en Git refleja **trabajo sustantivo y distribuido en al menos tres días distintos** a lo largo del plazo, evitando concentrar más del 50 % de las modificaciones dentro de las últimas 24 horas previas al cierre para prevenir penalizaciones en la calificación y en el aporte individual.
+En cumplimiento de la Sección 6 del Encuadre y las guías específicas:
+- Las entregas regulares cierran los **sábados a las 23:59** de la semana correspondiente, mientras que las evaluaciones presenciales (`EV-PRAC-01`) se entregan en clase y se digitalizan hasta las **23:59 del mismo día** de la sesión.
+- El historial de control de versiones en Git refleja trabajo sustantivo y distribuido (o separado por commits de evidencia fotográfica y transcripción fiel en el caso de evaluaciones presenciales).
